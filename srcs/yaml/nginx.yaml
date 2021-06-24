@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+       - name: nginx
+         image: nginx
+         imagePullPolicy: Never #image가 로컬에 있다고 판단하고 image 를 docekr hub등에서 pull 해오지 않는다. 만약 never를 안해준다면 새로 image를 pull 해와서 내가 설정해놓은 image를 사용하지 않는다.
+         ports:
+         - containerPort: 80
+           name: http
+         - containerPort: 443
+           name: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: shared
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  - port: 443
+    targetPort: 443
+    name: https
