@@ -11,21 +11,25 @@ spec:
       app: phpmyadmin
   template:
     metadata:
+      name: phpmyadmin
       labels:
         app: phpmyadmin
     spec:
       containers:
       - name: phpmyadmin
-        image: phpmyadmin
-        imagePullPolicy: Never
         ports:
         - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+        image: phpmyadmin
+        imagePullPolicy: Never
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    metallb.universe.tf/allow-shared-ip: shared
   name: phpmyadmin
   labels:
     app: phpmyadmin
