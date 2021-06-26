@@ -16,5 +16,4 @@ COPY	./srcs/index.html /var/www/html/
 
 EXPOSE	80 443
 
-CMD		echo "hello"
 CMD		sh init.sh

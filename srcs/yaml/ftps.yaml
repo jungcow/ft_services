@@ -1,43 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress
+  name: ftps
   labels:
-    app: wordpress
+    app: ftps
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wordpress
+      app: ftps
   template:
     metadata:
       labels:
-        app: wordpress
+        app: ftps
     spec:
       containers:
-      - name: wordpress
-        image: wordpress
+      - name: ftps
+        image: ftps
         imagePullPolicy: Never
         ports:
-        - containerPort: 5050
-          name: wordpress
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 5050
+        - containerPort: 21
+          name: ftps
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     metallb.universe.tf/allow-shared-ip: ft_services
-  name: wordpress
-  labels:
-    app: wordpress
+    name: ftps
+    labels:
+      app: ftps
 spec:
   type: LoadBalancer
   selector:
-    app: wordpress
+    app: ftps
   ports:
-  - port: 5050
-    targetPort: 5050
+  - port: 21
+    targetPort: 21
+    name: ftps

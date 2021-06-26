@@ -6,6 +6,7 @@ RUN		apk update && \
 COPY	./srcs/init.sh /
 COPY	./srcs/phpmyadmin.sql /
 COPY	./srcs/wordpress.sql /
+COPY	./srcs/dump_wordpress.sql /
 COPY	./srcs/my.cnf /etc/
 
 EXPOSE	3306

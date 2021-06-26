@@ -27,7 +27,7 @@ USE phpmyadmin;
 -- Privileges
 --
 -- (activate this statement if necessary)
-CREATE USER 'phpmyadmin'@'%' IDENTIFIED BY '1234';
+CREATE USER IF NOT EXISTS'admin'@'%' IDENTIFIED BY '1234';
 GRANT ALL PRIVILEGES ON *.* to 'phpmyadmin'@'%';
 FLUSH PRIVILEGES;
 

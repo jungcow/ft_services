@@ -29,7 +29,9 @@ RUN		apk update; \
 
 COPY	./srcs/init.sh /
 
-COPY	./srcs/nginx.conf /etc/nginx/nginx.conf
+COPY	./srcs/nginx.conf /
+
+COPY	./srcs/wp-config.php ./
 
 CMD		["sh", "init.sh"]
 

@@ -12,7 +12,9 @@ wget https://files.phpmyadmin.net/phpMyAdmin/4.9.7/phpMyAdmin-4.9.7-all-language
 
 tar -xvf phpMyAdmin*
 rm -rf *.tar.gz 
-mv phpMyAdmin* /usr/share/webapps/phpmyadmin
+mv phpMyAdmin* /usr/share/webapps/
+
+mv /usr/share/webapps/phpMyAdmin* /usr/share/webapps/phpmyadmin
 
 chmod -R 777 /usr/share/webapps/
 

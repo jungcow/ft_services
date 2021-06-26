@@ -1,8 +1,8 @@
 function ready_minikube ()
 {
 	minikube delete --all
-#	export MINIKUBE_HOME=~
-	export MINIKUBE_HOME=~/goinfre
+	export MINIKUBE_HOME=~
+#	export MINIKUBE_HOME=~/goinfre
 	minikube config set memory 2048
 	minikube config set disk-size 4096
 	minikube start --driver=virtualbox
@@ -17,6 +17,24 @@ function build_nginx()
 	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/image/nginx/srcs/nginx.conf
 }
 
+function build_phpmyadmin()
+{
+	sed -i '' "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/image/phpmyadmin/srcs/config.inc.php
+	docker build ./srcs/image/phpmyadmin -t phpmyadmin
+	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/image/phpmyadmin/srcs/config.inc.php
+}
+
+function build_wordpress()
+{
+	docker build ./srcs/image/wordpress -t wordpress
+}
+
+function build_mysql()
+{
+	sed -i '' "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/image/mysql/srcs/dump_wordpress.sql
+	docker build ./srcs/image/mysql -t mysql
+	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/image/mysql/srcs/dump_wordpress.sql
+}
 
 function build_metallb()
 {
@@ -29,21 +47,21 @@ function build_metallb()
 
 function build_images()
 {
-	docker build ./srcs/image/mysql -t mysql
-	docker build ./srcs/image/phpmyadmin -t phpmyadmin
-	docker build ./srcs/image/wordpress -t wordpress
+	build_nginx
+	build_phpmyadmin
+	build_wordpress
+	build_mysql
 }
 
 function build_minikube()
 {
 	build_metallb
-#	kubectl apply -f ./srcs/yaml/mysql.yaml
-#	kubectl apply -f ./srcs/yaml/nginx.yaml
-#	kubectl apply -f ./srcs/yaml/phpmyadmin.yaml
-#	kubectl apply -f ./srcs/yaml/wordpress.yaml
+	kubectl apply -f ./srcs/yaml/mysql.yaml
+	kubectl apply -f ./srcs/yaml/nginx.yaml
+	kubectl apply -f ./srcs/yaml/phpmyadmin.yaml
+	kubectl apply -f ./srcs/yaml/wordpress.yaml
 }
 
 ready_minikube
-#build_nginx
-#build_images
+build_images
 build_minikube

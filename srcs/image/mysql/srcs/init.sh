@@ -10,18 +10,18 @@ mysqld -u root &
 
 # Check mysql server started
 # Because it takes time to get started
-while :
+echo "SELECT 1" | mysql -u root --skip-password > /dev/null 2>&1
+until [ $? -ne "1" ]
 do
-	if [ `echo $?;` -ne 1 ]; then
-		break
-	fi
-	echo "Not started yet!"
-	sleep 1
+    echo "아직 안켜졌어요"
+    sleep 2
+    echo "SELECT 1" | mysql -u root --skip-password > /dev/null 2>&1
 done
 
 # Create tables
-mysql < /phpmyadmin.sql
-mysql < /wordpress.sql
+mysql -u root --skip-password < /phpmyadmin.sql
+mysql -u root --skip-password < /wordpress.sql
+mysql -u root --skip-password < /dump_wordpress.sql
 
 # For Restarting server
 mysqladmin -u root shutdown
