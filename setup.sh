@@ -45,12 +45,19 @@ function build_metallb()
 	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/yaml/metallb.yaml
 }
 
+function build_ftps()
+{
+	sed -i '' "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/image/ftps/srcs/vsftpd.conf
+	docker build ./srcs/image/ftps -t ftps
+	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/image/ftps/srcs/vsftpd.conf
+
 function build_images()
 {
 	build_nginx
 	build_phpmyadmin
 	build_wordpress
 	build_mysql
+	build_ftps
 }
 
 function build_minikube()
@@ -60,6 +67,7 @@ function build_minikube()
 	kubectl apply -f ./srcs/yaml/nginx.yaml
 	kubectl apply -f ./srcs/yaml/phpmyadmin.yaml
 	kubectl apply -f ./srcs/yaml/wordpress.yaml
+	kubectl apply -f ./srcs/yaml/ftps.yaml
 }
 
 ready_minikube

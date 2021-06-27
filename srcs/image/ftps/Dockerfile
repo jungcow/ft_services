@@ -7,6 +7,6 @@ RUN		apk update; \
 COPY	./srcs/init.sh ./
 COPY	./srcs/vsftpd.conf ./
 
-EXPOSE	21
+EXPOSE	21 50000 50001 50002
 
 CMD		["sh", "init.sh"]
