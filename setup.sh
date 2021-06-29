@@ -50,6 +50,30 @@ function build_ftps()
 	sed -i '' "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/image/ftps/srcs/vsftpd.conf
 	docker build ./srcs/image/ftps -t ftps
 	sed -i '' "s/$MINIKUBE_IP/MINIKUBE_IP/g" ./srcs/image/ftps/srcs/vsftpd.conf
+}
+
+function build_influxdb()
+{
+	kubectl create secret generic influxdb-secret \
+		--from-literal=INFLUX_CONFIG_PATH=/etc/influxdb.conf \
+		--from-literal=INFLUXDB_DATABASE=telegraf \
+		--from-literal=INFLUXDB_USERNAME=admin \
+		--from-literal=INFLUXDB_PASSWORD="1234" \
+		--from-literal=INFLUXDB_HOST=influxdb
+	docker build ./srcs/image/influxdb -t influxdb
+}
+
+function build_grafana()
+{
+	kubectl create secret generic grafana-secret \
+		--from-literal=GF_ADMIN_USER=admin \
+		--from-literal=GF_ADMIN_PASSWORD=1234
+}
+
+function build_telegraf()
+{
+	docker build ./srcs/image/telegraf -t telegraf
+}
 
 function build_images()
 {
@@ -58,18 +82,24 @@ function build_images()
 	build_wordpress
 	build_mysql
 	build_ftps
+	build_influxdb
+	build_grafana
+	build_telegraf
 }
 
 function build_minikube()
 {
+	build_images
 	build_metallb
 	kubectl apply -f ./srcs/yaml/mysql.yaml
 	kubectl apply -f ./srcs/yaml/nginx.yaml
 	kubectl apply -f ./srcs/yaml/phpmyadmin.yaml
 	kubectl apply -f ./srcs/yaml/wordpress.yaml
 	kubectl apply -f ./srcs/yaml/ftps.yaml
+	kubectl apply -f ./srcs/yaml/influxdb.yaml
+	kubectl apply -f ./srcs/yaml/grafana.yaml
+	kubectl apply -f ./srcs/yaml/telegraf.yaml
 }
 
 ready_minikube
-build_images
 build_minikube
