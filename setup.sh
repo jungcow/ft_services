@@ -3,7 +3,7 @@
 function ready_minikube ()
 {
 	minikube delete --all
-	export MINIKUBE_HOME=~
+	export MINIKUBE_HOME=~/goinfre
 	minikube config set memory 2048
 	minikube config set disk-size 4096
 	minikube start --driver=virtualbox
@@ -124,9 +124,9 @@ function build_minikube()
 	kubectl apply -f ./srcs/yaml/ftps.yaml
 	kubectl apply -f ./srcs/yaml/influxdb.yaml
 	kubectl apply -f ./srcs/yaml/grafana.yaml
-	kubectl create namespace monitoring
 	kubectl apply -f ./srcs/yaml/telegraf.yaml
 }
 
 ready_minikube
 build_minikube
+minikube dashboard
