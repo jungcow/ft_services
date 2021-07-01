@@ -8,16 +8,14 @@ data:
   influxdb.conf: |
     [meta]
       dir = "/var/lib/influxdb/meta"
+
     [data]
       dir = "/var/lib/influxdb/data"
-      war-dir = "/var/lib/influxdb/wal"
+      wal-dir = "/var/lib/influxdb/wal"
     [http]
       enabled = true
       bind-address = "0.0.0.0:8086"
       log-enabled = true
-    [admin]
-      enabled = true
-      bind-address = "0.0.0.0:8083"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -59,14 +57,12 @@ spec:
         ports:
         - containerPort: 8086
           name: influxdb-data
-        - containerPort: 8083
-          name: influxdb-admin
         volumeMounts:
         - name: influxdb-storage
           mountPath: /var/lib/influxdb
         - name: influxdb-config-volume
           subPath: influxdb.conf
-          mountPath: /etc/influxdb.conf
+          mountPath: /etc/influxdb/influxdb.conf
       volumes:
       - name: influxdb-storage
         persistentVolumeClaim:
@@ -89,7 +85,3 @@ spec:
   - name: influxdb-data
     port: 8086
     targetPort: 8086
-  - name: influxdb-admin
-    port: 8083
-    targetPort: 8083
-

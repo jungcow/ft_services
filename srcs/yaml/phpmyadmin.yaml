@@ -23,6 +23,8 @@ spec:
           httpGet:
             path: /
             port: 5000
+          periodSeconds: 20
+          failureThreshold: 3
         image: phpmyadmin
         imagePullPolicy: Never
 
